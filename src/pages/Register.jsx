@@ -103,7 +103,7 @@ export default function Register() {
             value={form.full_name}
             onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/20 text-white placeholder-white/40 focus:border-mu-gold outline-none"
-            placeholder="e.g. John Doe"
+            placeholder="e.g. Cliff Odero"
           />
         </div>
         <div>
