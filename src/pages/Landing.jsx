@@ -50,6 +50,10 @@ export default function Landing() {
             <p className="text-white/90 text-sm">Winner: <strong className="text-mu-gold">KSH 5,000</strong></p>
             <p className="text-white/90 text-sm">2nd place (runner-up): <strong className="text-mu-gold">KSH 2,000</strong></p>
           </div>
+
+          <p className="text-white/70 text-xs mt-4">
+            For queries, use the WhatsApp and TikTok icons at the bottom right.
+          </p>
         </section>
 
         {!started ? (
@@ -89,7 +93,16 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-4 px-4 text-center">
-        <p className="text-white/50 text-xs">Powered by Phaetex Solutions</p>
+        <p className="text-white/50 text-xs">
+          <a
+            href="https://wa.me/254705483375"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-mu-gold transition"
+          >
+            Powered by Phaetex Solutions
+          </a>
+        </p>
       </footer>
 
       {/* Enquiry icons – bottom right */}

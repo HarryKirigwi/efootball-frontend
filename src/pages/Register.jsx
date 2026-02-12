@@ -6,6 +6,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     full_name: '',
+    reg_no: '',
     efootball_username: '',
     password: '',
     confirmPassword: '',
@@ -21,11 +22,16 @@ export default function Register() {
     setError('');
 
     const fullName = form.full_name.trim();
+    const regNo = form.reg_no.trim();
     const username = form.efootball_username.trim();
     const mpesaCode = form.mpesa_transaction_code.trim().toUpperCase();
 
     if (fullName.length < 3) {
       setError('Full name should be at least 3 characters.');
+      return;
+    }
+    if (regNo.length < 3) {
+      setError('Registration number should be at least 3 characters.');
       return;
     }
     if (username.length < 3) {
@@ -49,6 +55,7 @@ export default function Register() {
     try {
       const data = await apiRegister({
         full_name: fullName,
+        reg_no: regNo,
         efootball_username: username,
         password: form.password,
         mpesa_transaction_code: mpesaCode,
@@ -72,8 +79,8 @@ export default function Register() {
       </Link>
       <h1 className="text-xl font-bold text-mu-gold mb-2">Register</h1>
       <p className="text-white/70 text-sm mb-6">
-        Pay KSH 90 via M-Pesa and paste your transaction code. You will be added to the participants list after
-        verification.
+        Pay KSH 90 via M-Pesa No: {import.meta.env.VITE_MPESA_NUMBER || ''} Mpesa Name: Peter Kimani and paste your
+        transaction code. You will be added to the participants list after verification.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="p-3 rounded-lg bg-red-500/20 text-red-200 text-sm">{error}</div>}
@@ -86,6 +93,17 @@ export default function Register() {
             onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/20 text-white placeholder-white/40 focus:border-mu-gold outline-none"
             placeholder="e.g. John Doe"
+          />
+        </div>
+        <div>
+          <label className="block text-sm text-white/80 mb-1">Registration number</label>
+          <input
+            type="text"
+            required
+            value={form.reg_no}
+            onChange={(e) => setForm((f) => ({ ...f, reg_no: e.target.value }))}
+            className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/20 text-white placeholder-white/40 focus:border-mu-gold outline-none"
+            placeholder="Your student/registration number"
           />
         </div>
         <div>
