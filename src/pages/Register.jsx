@@ -84,7 +84,7 @@ export default function Register() {
         Pay KSH 90 via M-Pesa. Name: Peter Kimani. Paste your transaction code below for verification.
       </p>
       <div className="mb-6 p-4 rounded-xl bg-mu-blue/60 border border-mu-gold/30">
-        <p className="text-white/60 text-xs mb-1">M-Pesa Paybill / Number</p>
+        <p className="text-white/60 text-xs mb-1">M-Pesa Number(send money)</p>
         <input
           type="text"
           readOnly
