@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register as apiRegister } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
   const navigate = useNavigate();
+  const { loginSuccess } = useAuth();
   const [form, setForm] = useState({
     full_name: '',
     reg_no: '',
@@ -62,8 +64,11 @@ export default function Register() {
       });
       if (data.token) {
         localStorage.setItem('token', data.token);
+        // Update auth context so ProtectedRoute allows /profile without a full reload
+        if (data.user) {
+          loginSuccess(data.user, data.verified);
+        }
         navigate('/profile', { replace: true });
-        window.location.reload();
       }
     } catch (err) {
       setError(err.message || 'Registration failed');
