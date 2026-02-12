@@ -107,14 +107,14 @@ export default function Register() {
           />
         </div>
         <div>
-          <label className="block text-sm text-white/80 mb-1">Registration number</label>
+          <label className="block text-sm text-white/80 mb-1">Admission number</label>
           <input
             type="text"
             required
             value={form.reg_no}
             onChange={(e) => setForm((f) => ({ ...f, reg_no: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/20 text-white placeholder-white/40 focus:border-mu-gold outline-none"
-            placeholder="Your student/registration number"
+            placeholder="e.g. J17-0458-2025"
           />
         </div>
         <div>
