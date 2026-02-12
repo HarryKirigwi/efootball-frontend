@@ -64,10 +64,7 @@ export default function Register() {
       });
       if (data.token) {
         localStorage.setItem('token', data.token);
-        // Update auth context so ProtectedRoute allows /profile without a full reload
-        if (data.user) {
-          loginSuccess(data.user, data.verified);
-        }
+        if (data.user) loginSuccess(data.user, data.verified);
         navigate('/profile', { replace: true });
       }
     } catch (err) {
@@ -83,10 +80,19 @@ export default function Register() {
         Back
       </Link>
       <h1 className="text-xl font-bold text-mu-gold mb-2">Register</h1>
-      <p className="text-white/70 text-sm mb-6">
-        Pay KSH 90 via M-Pesa No: {import.meta.env.VITE_MPESA_NUMBER || ''} Mpesa Name: Peter Kimani and paste your
-        transaction code. You will be added to the participants list after verification.
+      <p className="text-white/70 text-sm mb-3">
+        Pay KSH 90 via M-Pesa. Name: Peter Kimani. Paste your transaction code below for verification.
       </p>
+      <div className="mb-6 p-4 rounded-xl bg-mu-blue/60 border border-mu-gold/30">
+        <p className="text-white/60 text-xs mb-1">M-Pesa Paybill / Number</p>
+        <input
+          type="text"
+          readOnly
+          value={import.meta.env.VITE_MPESA_NUMBER || ''}
+          className="w-full py-4 px-4 text-xl md:text-2xl font-mono font-semibold text-mu-gold bg-mu-navy/50 rounded-lg border border-mu-gold/20 focus:outline-none focus:ring-2 focus:ring-mu-gold/50 cursor-text select-text"
+          onClick={(e) => e.target.select()}
+        />
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="p-3 rounded-lg bg-red-500/20 text-red-200 text-sm">{error}</div>}
         <div>

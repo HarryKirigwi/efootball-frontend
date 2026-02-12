@@ -31,6 +31,17 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-mu-navy text-white flex flex-col">
       <div className="max-w-lg mx-auto px-4 py-8 pb-32 flex-1">
+        {/* Logo - Machakos University */}
+        <div className="flex justify-center mb-6">
+          <div className="w-24 h-24 rounded-full overflow-hidden">
+            <img
+              src="/favicon.png"
+              alt="Machakos University"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
         {/* Hero */}
         <div className="text-center mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-mu-gold mb-1">{name}</h1>
@@ -92,8 +103,8 @@ export default function Landing() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-4 px-4 text-center">
-        <p className="text-white/50 text-xs">
+      <footer className="border-t border-white/10 py-4 px-4 pb-24 md:pb-4 text-center">
+        <p className="text-white/70 text-sm">
           <a
             href="https://wa.me/254705483375"
             target="_blank"
@@ -105,7 +116,7 @@ export default function Landing() {
         </p>
       </footer>
 
-      {/* Enquiry icons – bottom right */}
+      {/* Enquiry icons – bottom right (pb-24 clears on mobile) */}
       <div className="fixed bottom-20 right-4 flex flex-col gap-2 z-50">
         <a
           href="https://wa.me/254703977461"
