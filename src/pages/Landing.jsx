@@ -69,11 +69,11 @@ export default function Landing() {
 
         {!started ? (
           <section className="mb-6">
-            <p className="text-white/80 text-sm text-center mb-4">Entry fee: KSH 90 · Limited to the first 128 players.</p>
+            <p className="text-white/80 text-sm text-center mb-4">Entry fee: KSH 90 to be paid on match day· Limited to the first 128 players.</p>
             {!user && (
               <div className="grid grid-cols-2 gap-3">
                 <Link to="/login" className="py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium text-sm">Log in</Link>
-                <Link to="/register" className="py-3 rounded-xl bg-mu-gold text-mu-navy font-bold text-center text-sm">Register</Link>
+                <Link to="/register" className="py-3 rounded-xl bg-mu-gold text-mu-navy font-bold text-center text-sm">Reserve spot</Link>
               </div>
             )}
           </section>
@@ -97,7 +97,7 @@ export default function Landing() {
         {!user && started && (
           <div className="grid grid-cols-2 gap-3">
             <Link to="/login" className="py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium text-sm">Log in</Link>
-            <Link to="/register" className="py-3 rounded-xl border border-mu-gold/50 text-mu-gold text-center font-medium text-sm">Register</Link>
+            <Link to="/register" className="py-3 rounded-xl border border-mu-gold/50 text-mu-gold text-center font-medium text-sm">Secure spot</Link>
           </div>
         )}
       </div>

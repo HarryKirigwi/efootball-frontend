@@ -85,7 +85,7 @@ export default function SuperAdminDashboard() {
     const q = paymentsQuery.trim().toLowerCase();
     if (!q) return payments;
     return payments.filter((p) =>
-      `${p.full_name} ${p.efootball_username} ${p.mpesa_transaction_code}`.toLowerCase().includes(q)
+      `${p.full_name} ${p.efootball_username} ${p.mpesa_transaction_code || ''} ${p.phone_number || ''}`.toLowerCase().includes(q)
     );
   }, [payments, paymentsQuery]);
 
@@ -162,7 +162,7 @@ export default function SuperAdminDashboard() {
           <input
             value={paymentsQuery}
             onChange={(e) => setPaymentsQuery(e.target.value)}
-            placeholder="Search by name, username, transaction code…"
+            placeholder="Search by name, username, phone, transaction code…"
             className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/10 text-white placeholder-white/40 outline-none focus:border-mu-gold/60"
           />
 
@@ -184,7 +184,7 @@ export default function SuperAdminDashboard() {
                       <p className="text-white font-semibold leading-tight">{p.full_name}</p>
                       <p className="text-white/70 text-sm mt-0.5">{p.efootball_username}</p>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        <Badge>{p.mpesa_transaction_code}</Badge>
+                        <Badge>{p.mpesa_transaction_code || p.phone_number || 'Reserved'}</Badge>
                         <Badge tone="success">KSH {p.amount}</Badge>
                       </div>
                     </div>

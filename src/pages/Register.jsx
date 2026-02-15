@@ -12,7 +12,7 @@ export default function Register() {
     efootball_username: '',
     password: '',
     confirmPassword: '',
-    mpesa_transaction_code: '',
+    phone_number: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function Register() {
     const fullName = form.full_name.trim();
     const regNo = form.reg_no.trim();
     const username = form.efootball_username.trim();
-    const mpesaCode = form.mpesa_transaction_code.trim().toUpperCase();
+    const phone = form.phone_number.trim();
 
     if (fullName.length < 3) {
       setError('Full name should be at least 3 characters.');
@@ -48,8 +48,13 @@ export default function Register() {
       setError('Passwords do not match.');
       return;
     }
-    if (!/^[A-Z0-9]{10}$/.test(mpesaCode)) {
-      setError('M-Pesa transaction code should be 10 characters, letters and numbers only (e.g. UBAJ96AZLW).');
+    const phoneDigits = phone.replace(/\D/g, '');
+    const validPhone =
+      (phoneDigits.startsWith('254') && phoneDigits.length === 12) ||
+      (phoneDigits.startsWith('0') && phoneDigits.length === 10) ||
+      (phoneDigits.length === 9 && /^[17]/.test(phoneDigits));
+    if (!validPhone) {
+      setError('Enter a valid Kenyan phone number (e.g. 07XXXXXXXX or 2547XXXXXXXX).');
       return;
     }
 
@@ -60,7 +65,7 @@ export default function Register() {
         reg_no: regNo,
         efootball_username: username,
         password: form.password,
-        mpesa_transaction_code: mpesaCode,
+        phone_number: phone,
       });
       if (data.token) {
         localStorage.setItem('token', data.token);
@@ -80,19 +85,9 @@ export default function Register() {
         Back
       </Link>
       <h1 className="text-xl font-bold text-mu-gold mb-2">Register</h1>
-      <p className="text-white/70 text-sm mb-3">
-        Pay KSH 90 via M-Pesa. Name: Peter Kimani. Paste your transaction code below for verification.
+      <p className="text-white/70 text-sm mb-6">
+        Enter your phone number to reserve your spot. You will be added to the participants list after verification.
       </p>
-      <div className="mb-6 p-4 rounded-xl bg-mu-blue/60 border border-mu-gold/30">
-        <p className="text-white/60 text-xs mb-1">M-Pesa Number(send money)</p>
-        <input
-          type="text"
-          readOnly
-          value={import.meta.env.VITE_MPESA_NUMBER || ''}
-          className="w-full py-4 px-4 text-xl md:text-2xl font-mono font-semibold text-mu-gold bg-mu-navy/50 rounded-lg border border-mu-gold/20 focus:outline-none focus:ring-2 focus:ring-mu-gold/50 cursor-text select-text"
-          onClick={(e) => e.target.select()}
-        />
-      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="p-3 rounded-lg bg-red-500/20 text-red-200 text-sm">{error}</div>}
         <div>
@@ -171,20 +166,14 @@ export default function Register() {
           </div>
         </div>
         <div>
-          <label className="block text-sm text-white/80 mb-1">M-Pesa transaction code</label>
+          <label className="block text-sm text-white/80 mb-1">Phone number</label>
           <input
-            type="text"
+            type="tel"
             required
-            value={form.mpesa_transaction_code}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                mpesa_transaction_code: e.target.value.toUpperCase(),
-              }))
-            }
+            value={form.phone_number}
+            onChange={(e) => setForm((f) => ({ ...f, phone_number: e.target.value }))}
             className="w-full px-4 py-3 rounded-xl bg-mu-blue border border-white/20 text-white placeholder-white/40 focus:border-mu-gold outline-none"
-            placeholder="e.g. UBAJ96AZLW"
-            maxLength={10}
+            placeholder="e.g. 0712345678 or 254712345678"
           />
         </div>
         <button
@@ -192,7 +181,7 @@ export default function Register() {
           disabled={loading}
           className="w-full py-4 rounded-xl bg-mu-gold text-mu-navy font-bold disabled:opacity-50"
         >
-          {loading ? 'Registering...' : 'Register'}
+          {loading ? 'Reserving...' : 'Reserve spot'}
         </button>
       </form>
       <p className="text-center text-white/60 text-sm mt-6">
