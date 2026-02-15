@@ -86,7 +86,7 @@ export default function Register() {
       </Link>
       <h1 className="text-xl font-bold text-mu-gold mb-2">Register</h1>
       <p className="text-white/70 text-sm mb-6">
-        Enter your phone number to reserve your spot. You will be added to the participants list after verification.
+        Enter your phone number to reserve your spot. You will be added to the waiting list and paired once the tournament starts.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <div className="p-3 rounded-lg bg-red-500/20 text-red-200 text-sm">{error}</div>}

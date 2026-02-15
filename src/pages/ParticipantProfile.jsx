@@ -48,10 +48,9 @@ export default function ParticipantProfile() {
         </div>
       ) : (
         <div className="p-4 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-200 text-sm space-y-1">
-          <p className="font-semibold">You are not verified yet.</p>
+          <p className="font-semibold">You have been added to the waiting list.</p>
           <p>
-            You cannot participate in a match and are not on the participants list. Please wait while your payment is
-            being verified.
+            You will be paired once the tournament starts. Stay tuned for match announcements.
           </p>
         </div>
       )}
