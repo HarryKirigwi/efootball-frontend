@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getConfig } from '../api/client';
+import { getConfig, getRounds } from '../api/client';
+import { useMatches } from '../hooks/useMatches';
+import LandingFixtures from '../components/LandingFixtures';
 
 function WhatsAppIcon({ className }) {
   return (
@@ -22,89 +24,189 @@ function TikTokIcon({ className }) {
 export default function Landing() {
   const { user } = useAuth();
   const [config, setConfig] = useState({ tournament_status: 'not_started', tournament_name: '' });
+  const [rounds, setRounds] = useState([]);
+  const { upcoming, ongoing, completed, loading, error, refetch } = useMatches();
   useEffect(() => {
     getConfig().then(setConfig).catch(() => ({}));
   }, []);
+  useEffect(() => {
+    getRounds().then((r) => setRounds(r.rounds || [])).catch(() => setRounds([]));
+  }, []);
   const started = config.tournament_status === 'started';
-  const name = config.tournament_name || 'Machakos University Efootball Tournament';
 
   return (
-    <div className="min-h-screen bg-mu-navy text-white flex flex-col">
-      <div className="max-w-lg mx-auto px-4 py-8 pb-32 flex-1">
-        {/* Logo - Machakos University */}
-        <div className="flex justify-center mb-6">
-          <div className="w-24 h-24 rounded-full overflow-hidden">
-            <img
-              src="/favicon.png"
-              alt="Machakos University"
-              className="w-full h-full object-cover"
-            />
-          </div>
+    <div className="min-h-screen bg-mu-navy text-white flex flex-col overflow-x-hidden">
+      {/* Top-right login when not logged in – mobile/tablet only; desktop uses top bar */}
+      {!user && (
+        <div className="fixed top-4 right-4 md:right-6 md:top-5 z-40 lg:hidden">
+          <Link
+            to="/login"
+            className="px-4 py-2 rounded-xl bg-mu-blue border border-mu-gold/40 text-sm font-medium text-white shadow-lg hover:bg-mu-gold hover:text-mu-navy transition"
+          >
+            Log in
+          </Link>
         </div>
+      )}
 
-        {/* Hero */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-mu-gold mb-1">{name}</h1>
-          <p className="text-white/70 text-sm">Sponsored by Migichi Adventures</p>
-        </div>
-
-        {/* Welcome block */}
-        <section className="bg-mu-blue/50 rounded-2xl border border-mu-gold/30 p-6 mb-6">
-          <p className="text-white/90 text-sm leading-relaxed mb-4">
-            <span className="text-mu-gold font-semibold">Migichi Adventures</span> welcomes you to an eFootball tournament scheduled to take place from <strong className="text-white">2 March</strong>.
-          </p>
-          <p className="text-white/90 text-sm leading-relaxed mb-4">
-            The tournament will feature <strong className="text-white">128 participants</strong> at the start and will run in rounds until we reach the finals. Compete, advance, and aim for the top.
-          </p>
-          <div className="rounded-xl bg-mu-navy/60 border border-mu-gold/20 p-4 mt-4">
-            <p className="text-mu-gold font-semibold text-sm mb-2">Prizes</p>
-            <p className="text-white/90 text-sm">Winner: <strong className="text-mu-gold">KSH 5,000</strong></p>
-            <p className="text-white/90 text-sm">2nd place (runner-up): <strong className="text-mu-gold">KSH 2,000</strong></p>
+      {/* Top bar (logo + title, and on desktop: Log in / Reserve spot when registration is on) */}
+      <header className={`sticky top-0 z-30 border-b border-white/10 bg-mu-navy/95 backdrop-blur-sm ${!user ? 'pr-24 md:pr-28 lg:pr-0' : ''}`}>
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0">
+              <img src="/favicon.png" alt="Machakos University" className="w-full h-full object-cover" />
+            </div>
+            <h1 className="font-bold text-mu-gold text-base md:text-lg lg:text-xl truncate min-w-0">MKSU Efootball Tournament</h1>
           </div>
+          {/* Desktop: Log in and/or Reserve spot in top bar when not logged in */}
+          {!user && (
+            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+              {!started && (
+                <>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 rounded-xl bg-mu-blue border border-mu-gold/40 text-sm font-medium text-white hover:bg-mu-gold hover:text-mu-navy transition"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="px-4 py-2 rounded-xl bg-mu-gold text-mu-navy font-bold text-sm hover:opacity-90 transition"
+                  >
+                    Reserve spot
+                  </Link>
+                </>
+              )}
+              {started && (
+                <Link
+                  to="/login"
+                  className="px-4 py-2 rounded-xl bg-mu-blue border border-mu-gold/40 text-sm font-medium text-white hover:bg-mu-gold hover:text-mu-navy transition"
+                >
+                  Log in
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+      </header>
 
-          <p className="text-white/70 text-xs mt-4">
-            For queries, use the WhatsApp and TikTok icons at the bottom right.
-          </p>
-        </section>
+      <div className="w-full max-w-lg lg:max-w-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 flex-1 pb-32 md:pb-12 pt-2 md:pt-4 lg:pt-6">
+        {/* Sponsored line below top bar */}
+        <p className="text-white/60 text-xs lg:text-sm text-center mb-4 lg:mb-6">Sponsored by Migichi Adventures</p>
 
-        {!started ? (
-          <section className="mb-6">
-            <p className="text-white/80 text-sm text-center mb-4">Entry fee: KSH 90 to be paid on match day· Limited to the first 128 players.</p>
-            {!user && (
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/login" className="py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium text-sm">Log in</Link>
-                <Link to="/register" className="py-3 rounded-xl bg-mu-gold text-mu-navy font-bold text-center text-sm">Reserve spot</Link>
+        {/* Welcome + registration only when tournament has not started */}
+        {!started && (
+          <>
+            {/* Hero: welcome + rules – single column on mobile, two columns on lg+ */}
+            <section className="bg-mu-blue/50 rounded-2xl border border-mu-gold/30 p-6 md:p-8 lg:p-10 mb-6 lg:mb-8">
+              <div className="lg:grid lg:grid-cols-5 lg:gap-8">
+                <div className="lg:col-span-3">
+                  <p className="text-white/90 text-sm lg:text-base leading-relaxed mb-4">
+                    <span className="text-mu-gold font-semibold">Migichi Adventures</span> welcomes you to an eFootball tournament scheduled to take place from <strong className="text-white">2 March</strong>.
+                  </p>
+                  <p className="text-white/90 text-sm lg:text-base leading-relaxed mb-4">
+                    The tournament will feature <strong className="text-white">up to 128 participants</strong> and will run in rounds until we reach the finals. Compete, advance, and aim for the top.
+                  </p>
+                  <div className="rounded-xl bg-mu-navy/60 border border-mu-gold/20 p-4 lg:p-5 mt-4">
+                    <p className="text-mu-gold font-semibold text-sm lg:text-base mb-2">Prizes</p>
+                    <p className="text-white/90 text-sm lg:text-base">Winner: <strong className="text-mu-gold">KSH 5,000</strong></p>
+                    <p className="text-white/90 text-sm lg:text-base">2nd place (runner-up): <strong className="text-mu-gold">KSH 2,000</strong></p>
+                  </div>
+                </div>
+                <div className="lg:col-span-2 mt-6 lg:mt-0">
+                  <p className="text-mu-gold font-semibold text-sm lg:text-base mt-0 mb-2">Rules</p>
+                  <ol className="text-white/90 text-sm lg:text-base space-y-1.5 lg:space-y-2 list-decimal list-inside">
+                    <li>Smart assist will be off</li>
+                    <li>Participants should ensure they have their own data bundles.</li>
+                    <li>Participants to show up during their matchdays at the given venue and on time.</li>
+                    <li>No trash talking – this will subject you to elimination.</li>
+                    <li>No rematch – we accept the outcomes.</li>
+                  </ol>
+                  <p className="text-white/70 text-xs lg:text-sm mt-4">
+                    For queries, use the WhatsApp and TikTok icons at the bottom right.
+                  </p>
+                </div>
               </div>
-            )}
+            </section>
+
+            <section className="mb-6 lg:mb-8">
+              <p className="text-white/80 text-sm lg:text-base text-center mb-4 lg:mb-0">
+                Entry fee: KSH 90 to be paid on match day · Slots are limited and may close once the draw is full.
+              </p>
+              {/* Mobile/tablet only: Log in + Reserve spot; on desktop they are in the top bar */}
+              {!user && (
+                <div className="grid grid-cols-2 lg:hidden gap-3 max-w-md mx-auto mt-4">
+                  <Link
+                    to="/login"
+                    className="py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium text-sm"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="py-3 rounded-xl bg-mu-gold text-mu-navy font-bold text-center text-sm"
+                  >
+                    Reserve spot
+                  </Link>
+                </div>
+              )}
+            </section>
+          </>
+        )}
+
+        {/* Rules when live – just before fixtures */}
+        {started && (
+          <section className="rounded-xl border border-white/10 bg-mu-navy/60 p-4 lg:p-6 mb-4 lg:mb-6">
+            <h2 className="text-xs lg:text-sm font-bold text-mu-gold uppercase tracking-wider mb-3">Rules</h2>
+            <ol className="text-white/90 text-sm lg:text-base space-y-1.5 lg:space-y-2 list-decimal list-inside">
+              <li>Smart assist will be off</li>
+              <li>Participants should ensure they have their own data bundles.</li>
+              <li>Participants to show up during their matchdays at the given venue and on time.</li>
+              <li>No trash talking – this will subject you to elimination.</li>
+              <li>No rematch – we accept the outcomes.</li>
+            </ol>
           </section>
-        ) : (
-          <div className="bg-mu-blue/50 rounded-2xl border border-mu-gold/30 p-6 mb-6">
-            <p className="text-mu-gold font-semibold text-center mb-2">Tournament is live</p>
-            <p className="text-white/80 text-sm text-center">Upcoming, ongoing and past matches will appear here.</p>
+        )}
+
+        {/* Fixtures / results only when tournament is live */}
+        {started && (
+          <div className="mb-6 lg:mb-8">
+            <LandingFixtures
+              ongoing={ongoing}
+              upcoming={upcoming}
+              completed={completed}
+              loading={loading}
+              error={error}
+              onRefresh={refetch}
+              rounds={rounds}
+            />
           </div>
         )}
 
         {/* Logged-in: profile and admin links */}
         {user && (
-          <div className="flex flex-col gap-3">
-            <Link to="/profile" className="block py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium">My profile</Link>
-            {user.role === 'super_admin' && <Link to="/super-admin" className="block py-3 rounded-xl bg-mu-gold/20 border border-mu-gold text-mu-gold text-center font-medium">Super Admin</Link>}
-            {(user.role === 'admin' || user.role === 'super_admin') && <Link to="/admin" className="block py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium">Admin</Link>}
+          <div className="flex flex-col lg:flex-row gap-3 lg:justify-center">
+            <Link
+              to="/profile"
+              className="block py-3 lg:py-3.5 lg:px-8 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium lg:text-base"
+            >
+              My profile
+            </Link>
+            {user.role === 'super_admin' && (
+              <Link
+                to="/super-admin"
+                className="block py-3 lg:py-3.5 lg:px-8 rounded-xl bg-mu-gold/20 border border-mu-gold text-mu-gold text-center font-medium lg:text-base"
+              >
+                Super Admin
+              </Link>
+            )}
           </div>
         )}
 
-        {/* Guest: side-by-side Login / Register (when tournament is live) */}
-        {!user && started && (
-          <div className="grid grid-cols-2 gap-3">
-            <Link to="/login" className="py-3 rounded-xl bg-mu-blue border border-mu-gold/30 text-center font-medium text-sm">Log in</Link>
-            <Link to="/register" className="py-3 rounded-xl border border-mu-gold/50 text-mu-gold text-center font-medium text-sm">Secure spot</Link>
-          </div>
-        )}
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-4 px-4 pb-24 md:pb-4 text-center">
-        <p className="text-white/70 text-sm">
+      <footer className="border-t border-white/10 py-4 lg:py-6 px-4 sm:px-6 md:px-8 lg:px-10 pb-24 md:pb-4 text-center max-w-5xl mx-auto">
+        <p className="text-white/70 text-sm lg:text-base">
           <a
             href="https://wa.me/254705483375"
             target="_blank"
@@ -117,24 +219,24 @@ export default function Landing() {
       </footer>
 
       {/* Enquiry icons – bottom right (pb-24 clears on mobile) */}
-      <div className="fixed bottom-20 right-4 flex flex-col gap-2 z-50">
+      <div className="fixed bottom-20 right-4 md:right-6 md:bottom-6 lg:right-10 lg:bottom-8 flex flex-col gap-2 z-50">
         <a
           href="https://wa.me/254703977461"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg hover:bg-green-600 transition"
+          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg hover:bg-green-600 transition"
           aria-label="WhatsApp enquiries"
         >
-          <WhatsAppIcon className="w-6 h-6" />
+          <WhatsAppIcon className="w-6 h-6 lg:w-7 lg:h-7" />
         </a>
         <a
           href="https://www.tiktok.com/@migichi_wanders?is_from_webapp=1&sender_device=pc"
           target="_blank"
           rel="noopener noreferrer"
-          className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white shadow-lg hover:opacity-90 transition"
+          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-black flex items-center justify-center text-white shadow-lg hover:opacity-90 transition"
           aria-label="TikTok enquiries"
         >
-          <TikTokIcon className="w-5 h-5" />
+          <TikTokIcon className="w-5 h-5 lg:w-6 lg:h-6" />
         </a>
       </div>
     </div>

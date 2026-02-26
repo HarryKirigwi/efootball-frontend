@@ -4,7 +4,6 @@ import Landing from './pages/Landing';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
-import AdminDashboard from './pages/AdminDashboard';
 import ParticipantProfile from './pages/ParticipantProfile';
 import Layout from './components/Layout';
 
@@ -23,8 +22,14 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/super-admin" element={<ProtectedRoute requireSuperAdmin><Layout><SuperAdminDashboard /></Layout></ProtectedRoute>} />
-      <Route path="/admin" element={<ProtectedRoute requireAdmin><Layout><AdminDashboard /></Layout></ProtectedRoute>} />
+      <Route
+        path="/super-admin"
+        element={
+          <ProtectedRoute requireSuperAdmin>
+            <SuperAdminDashboard />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/profile" element={<ProtectedRoute><Layout><ParticipantProfile /></Layout></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
